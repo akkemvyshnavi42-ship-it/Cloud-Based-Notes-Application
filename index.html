@@ -1,0 +1,477 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud-Based Notes Application</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+            min-height: 100vh;
+            color: #1e293b;
+        }
+
+        header {
+            background: #4f46e5;
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            font-size: 14px;
+            color: #e0e7ff;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+
+        .note-form {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+            margin-bottom: 30px;
+        }
+
+        .note-form h2 {
+            color: #4f46e5;
+            margin-bottom: 20px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 13px;
+            margin-bottom: 15px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        input:focus, textarea:focus {
+            border-color: #4f46e5;
+        }
+
+        textarea {
+            height: 130px;
+            resize: vertical;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            border: none;
+            border-radius: 7px;
+            padding: 11px 20px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .save-btn {
+            background: #4f46e5;
+            color: white;
+        }
+
+        .save-btn:hover {
+            background: #3730a3;
+        }
+
+        .clear-btn {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .clear-btn:hover {
+            background: #cbd5e1;
+        }
+
+        .notes-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .notes-header h2 {
+            font-size: 24px;
+        }
+
+        #searchInput {
+            max-width: 300px;
+            margin-bottom: 0;
+        }
+
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .note-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border-top: 5px solid #818cf8;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+            overflow-wrap: anywhere;
+        }
+
+        .note-card h3 {
+            color: #3730a3;
+            margin-bottom: 12px;
+            font-size: 19px;
+        }
+
+        .note-card p {
+            color: #475569;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            margin-bottom: 15px;
+        }
+
+        .note-date {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-bottom: 15px;
+        }
+
+        .note-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .edit-btn {
+            background: #dbeafe;
+            color: #1d4ed8;
+            flex: 1;
+        }
+
+        .edit-btn:hover {
+            background: #bfdbfe;
+        }
+
+        .delete-btn {
+            background: #fee2e2;
+            color: #dc2626;
+            flex: 1;
+        }
+
+        .delete-btn:hover {
+            background: #fecaca;
+        }
+
+        .empty-message {
+            text-align: center;
+            color: #64748b;
+            padding: 35px 10px;
+            background: white;
+            border-radius: 10px;
+            grid-column: 1 / -1;
+        }
+
+        footer {
+            background: #1e293b;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 24px;
+            }
+
+            .container {
+                padding: 12px;
+                margin: 20px auto;
+            }
+
+            .note-form {
+                padding: 18px;
+            }
+
+            .notes-header {
+                align-items: stretch;
+            }
+
+            #searchInput {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>☁️ Cloud-Based Notes Application</h1>
+        <p>Create, organize, edit, and manage your notes easily</p>
+    </header>
+
+    <main class="container">
+
+        <section class="note-form">
+            <h2 id="formHeading">📝 Create a New Note</h2>
+
+            <input
+                type="text"
+                id="noteTitle"
+                placeholder="Enter note title"
+                maxlength="100"
+            >
+
+            <textarea
+                id="noteContent"
+                placeholder="Write your note here..."
+            ></textarea>
+
+            <div class="button-group">
+                <button class="save-btn" id="saveButton">
+                    Save Note
+                </button>
+
+                <button class="clear-btn" id="clearButton">
+                    Clear
+                </button>
+            </div>
+        </section>
+
+        <section>
+            <div class="notes-header">
+                <h2>My Notes 📚</h2>
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="🔍 Search notes..."
+                    aria-label="Search notes"
+                >
+            </div>
+
+            <div class="notes-grid" id="notesGrid"></div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>Cloud-Based Notes Application | College Mini Project</p>
+    </footer>
+
+    <script>
+        const titleInput = document.getElementById("noteTitle");
+        const contentInput = document.getElementById("noteContent");
+        const saveButton = document.getElementById("saveButton");
+        const clearButton = document.getElementById("clearButton");
+        const notesGrid = document.getElementById("notesGrid");
+        const searchInput = document.getElementById("searchInput");
+        const formHeading = document.getElementById("formHeading");
+
+        let notes = [];
+        let editingId = null;
+
+        // Load notes saved in this browser.
+        try {
+            notes = JSON.parse(localStorage.getItem("myNotes")) || [];
+        } catch (error) {
+            notes = [];
+        }
+
+        function saveToBrowser() {
+            try {
+                localStorage.setItem("myNotes", JSON.stringify(notes));
+            } catch (error) {
+                alert("Unable to save notes in browser storage.");
+            }
+        }
+
+        function clearForm() {
+            titleInput.value = "";
+            contentInput.value = "";
+            editingId = null;
+            formHeading.textContent = "📝 Create a New Note";
+            saveButton.textContent = "Save Note";
+        }
+
+        function saveNote() {
+            const title = titleInput.value.trim();
+            const content = contentInput.value.trim();
+
+            if (title === "" || content === "") {
+                alert("Please enter both a title and note content.");
+                return;
+            }
+
+            if (editingId !== null) {
+                notes = notes.map(function(note) {
+                    if (note.id === editingId) {
+                        return {
+                            ...note,
+                            title: title,
+                            content: content,
+                            updatedAt: new Date().toLocaleString()
+                        };
+                    }
+
+                    return note;
+                });
+            } else {
+                notes.unshift({
+                    id: Date.now().toString() +
+                        Math.random().toString(36).slice(2),
+                    title: title,
+                    content: content,
+                    updatedAt: new Date().toLocaleString()
+                });
+            }
+
+            saveToBrowser();
+            clearForm();
+            displayNotes(searchInput.value);
+        }
+
+        function editNote(id) {
+            const note = notes.find(function(item) {
+                return item.id === id;
+            });
+
+            if (!note) return;
+
+            titleInput.value = note.title;
+            contentInput.value = note.content;
+            editingId = id;
+
+            formHeading.textContent = "✏️ Edit Note";
+            saveButton.textContent = "Update Note";
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        }
+
+        function deleteNote(id) {
+            const confirmed = confirm(
+                "Are you sure you want to delete this note?"
+            );
+
+            if (!confirmed) return;
+
+            notes = notes.filter(function(note) {
+                return note.id !== id;
+            });
+
+            if (editingId === id) {
+                clearForm();
+            }
+
+            saveToBrowser();
+            displayNotes(searchInput.value);
+        }
+
+        function displayNotes(searchText = "") {
+            notesGrid.innerHTML = "";
+
+            const filteredNotes = notes.filter(function(note) {
+                return (
+                    note.title.toLowerCase().includes(
+                        searchText.toLowerCase()
+                    ) ||
+                    note.content.toLowerCase().includes(
+                        searchText.toLowerCase()
+                    )
+                );
+            });
+
+            if (filteredNotes.length === 0) {
+                const message = document.createElement("div");
+                message.className = "empty-message";
+
+                message.textContent = searchText
+                    ? "No matching notes found."
+                    : "No notes available. Create your first note! 📝";
+
+                notesGrid.appendChild(message);
+                return;
+            }
+
+            filteredNotes.forEach(function(note) {
+                const card = document.createElement("article");
+                card.className = "note-card";
+
+                const title = document.createElement("h3");
+                title.textContent = note.title;
+
+                const content = document.createElement("p");
+                content.textContent = note.content;
+
+                const date = document.createElement("div");
+                date.className = "note-date";
+                date.textContent = "Last updated: " + note.updatedAt;
+
+                const actions = document.createElement("div");
+                actions.className = "note-actions";
+
+                const editButton = document.createElement("button");
+                editButton.className = "edit-btn";
+                editButton.textContent = "✏️ Edit";
+                editButton.addEventListener("click", function() {
+                    editNote(note.id);
+                });
+
+                const deleteButton = document.createElement("button");
+                deleteButton.className = "delete-btn";
+                deleteButton.textContent = "🗑️ Delete";
+                deleteButton.addEventListener("click", function() {
+                    deleteNote(note.id);
+                });
+
+                actions.appendChild(editButton);
+                actions.appendChild(deleteButton);
+
+                card.appendChild(title);
+                card.appendChild(content);
+                card.appendChild(date);
+                card.appendChild(actions);
+
+                notesGrid.appendChild(card);
+            });
+        }
+
+        saveButton.addEventListener("click", saveNote);
+        clearButton.addEventListener("click", clearForm);
+
+        searchInput.addEventListener("input", function() {
+            displayNotes(searchInput.value);
+        });
+
+        displayNotes();
+    </script>
+
+</body>
+</html>
+```
